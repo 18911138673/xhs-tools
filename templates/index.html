@@ -134,7 +134,100 @@
         </div>
     </section>
 
-    <!-- 使用记录 -->
+    
+    <!-- 封面图制作 -->
+    <section id="cover" class="tool-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">🎨</span>
+                <h2>封面图制作</h2>
+                <p class="section-desc">输入标题，自动生成精美小红书封面</p>
+            </div>
+            <div class="tool-card">
+                <div class="input-row">
+                    <input type="text" id="cover-title" placeholder="主标题（必填）" class="input-field" style="flex:2">
+                    <input type="text" id="cover-subtitle" placeholder="副标题（可选）" class="input-field" style="flex:1.5">
+                    <select id="cover-style" class="input-field" style="flex:1">
+                        <option value="tech">🔵 科技蓝</option>
+                        <option value="warm">🟠 暖橙色</option>
+                        <option value="green">🟢 清新绿</option>
+                        <option value="purple">🟣 优雅紫</option>
+                    </select>
+                    <button onclick="generateCover()" class="btn-action" id="cover-btn">🎨 生成</button>
+                </div>
+                <div id="cover-result" class="result-area hidden">
+                    <div style="text-align:center">
+                        <img id="cover-image" src="" alt="封面图" style="max-width:100%;max-height:500px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1)">
+                        <div style="margin-top:12px">
+                            <button class="btn-copy" onclick="downloadCover()">⬇️ 下载封面</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="cover-error" class="error-area hidden"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 排版助手 -->
+    <section id="format" class="tool-section bg-light">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">📐</span>
+                <h2>排版助手</h2>
+                <p class="section-desc">自动添加emoji和话题标签，让文案更好看</p>
+            </div>
+            <div class="tool-card">
+                <div class="input-group" style="flex-direction:column">
+                    <textarea id="format-text" rows="4" placeholder="粘贴你的文案内容..." class="input-field" style="resize:vertical;min-height:100px"></textarea>
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px">
+                        <label><input type="checkbox" id="format-emojis" checked> ✨ 添加emoji</label>
+                        <label><input type="checkbox" id="format-hashtags"> #️⃣ 添加话题标签</label>
+                        <input type="text" id="format-topics" placeholder="话题标签（逗号分隔）" class="input-field" style="flex:1;min-width:150px">
+                        <button onclick="formatPost()" class="btn-action" id="format-btn">📐 排版</button>
+                    </div>
+                </div>
+                <div id="format-result" class="result-area hidden">
+                    <div id="format-output" class="copy-content" style="white-space:pre-wrap"></div>
+                    <div style="margin-top:8px;font-size:12px;color:#86868b">
+                        <span id="format-info"></span>
+                    </div>
+                    <button class="btn-copy" onclick="copyFormatted()">📋 复制排版结果</button>
+                </div>
+                <div id="format-error" class="error-area hidden"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI文案模板v2 -->
+    <section id="copyv2" class="tool-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">🧠</span>
+                <h2>AI文案模板</h2>
+                <p class="section-desc">多类型文案模板，一键生成不同角度的内容</p>
+            </div>
+            <div class="tool-card">
+                <div class="input-row">
+                    <input type="text" id="copyv2-topic" placeholder="输入主题，如：美白精华、北京美食" class="input-field" style="flex:2">
+                    <select id="copyv2-category" class="input-field" style="flex:1">
+                        <option value="好物推荐">🛍️ 好物推荐</option>
+                        <option value="探店">🍽️ 探店</option>
+                        <option value="教程干货">📚 教程干货</option>
+                        <option value="旅行攻略">✈️ 旅行攻略</option>
+                        <option value="美妆护肤">💄 美妆护肤</option>
+                    </select>
+                    <button onclick="generateCopyV2()" class="btn-action" id="copyv2-btn">🧠 生成</button>
+                </div>
+                <div id="copyv2-result" class="result-area hidden">
+                    <div id="copyv2-output" class="copy-content"></div>
+                    <button class="btn-copy" onclick="copyCopyV2()">📋 复制全部</button>
+                </div>
+                <div id="copyv2-error" class="error-area hidden"></div>
+            </div>
+        </div>
+    </section>
+
+<!-- 使用记录 -->
     <section id="history" class="tool-section">
         <div class="container">
             <div class="section-header">

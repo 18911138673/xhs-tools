@@ -249,6 +249,111 @@ function showToast(msg) {
     setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity 0.3s"; setTimeout(() => t.remove(), 300); }, 2000);
 }
 
+
+
+// ===== 封面图制作 =====
+async function generateCover() {
+    const title = document.getElementById("cover-title").value.trim();
+    const subtitle = document.getElementById("cover-subtitle").value.trim();
+    const style = document.getElementById("cover-style").value;
+    if (!title) { showError("cover", "请输入标题"); return; }
+    hideError("cover"); hideResult("cover");
+    document.getElementById("cover-btn").disabled = true;
+    document.getElementById("cover-btn").textContent = "⏳ 生成中...";
+    try {
+        const resp = await fetch(API_BASE + "/api/generate_cover", {
+            method: "POST", headers: getHeaders(),
+            body: JSON.stringify({title, subtitle, style})
+        });
+        const data = await resp.json();
+        if (!data.success) { showError("cover", data.error); return; }
+        document.getElementById("cover-image").src = data.data.url;
+        window._coverUrl = data.data.url;
+        showResult("cover");
+    } catch(e) { showError("cover", "生成失败"); }
+    finally {
+        document.getElementById("cover-btn").disabled = false;
+        document.getElementById("cover-btn").textContent = "🎨 生成";
+    }
+}
+
+function downloadCover() {
+    if (window._coverUrl) {
+        const a = document.createElement("a");
+        a.href = window._coverUrl;
+        a.download = "cover.png";
+        a.click();
+    }
+}
+
+// ===== 排版助手 =====
+async function formatPost() {
+    const text = document.getElementById("format-text").value.trim();
+    if (!text) { showError("format", "请输入文案内容"); return; }
+    const addEmojis = document.getElementById("format-emojis").checked;
+    const addHashtags = document.getElementById("format-hashtags").checked;
+    const topicsStr = document.getElementById("format-topics").value.trim();
+    const topics = topicsStr ? topicsStr.split(/[,，]/).map(t => t.trim()).filter(t => t) : [];
+    hideError("format"); hideResult("format");
+    document.getElementById("format-btn").disabled = true;
+    document.getElementById("format-btn").textContent = "⏳ 排版中...";
+    try {
+        const resp = await fetch(API_BASE + "/api/format_post", {
+            method: "POST", headers: getHeaders(),
+            body: JSON.stringify({text, add_emojis: addEmojis, add_hashtags: addHashtags, topics})
+        });
+        const data = await resp.json();
+        if (!data.success) { showError("format", data.error); return; }
+        document.getElementById("format-output").textContent = data.data.formatted;
+        document.getElementById("format-info").textContent = `📊 ${data.data.info.chars}字 · ${data.data.info.lines}行`;
+        showResult("format");
+    } catch(e) { showError("format", "排版失败"); }
+    finally {
+        document.getElementById("format-btn").disabled = false;
+        document.getElementById("format-btn").textContent = "📐 排版";
+    }
+}
+
+function copyFormatted() {
+    const text = document.getElementById("format-output").textContent;
+    navigator.clipboard.writeText(text).then(() => showToast("✅ 已复制"));
+}
+
+// ===== AI文案模板v2 =====
+async function generateCopyV2() {
+    const topic = document.getElementById("copyv2-topic").value.trim();
+    const category = document.getElementById("copyv2-category").value;
+    if (!topic) { showError("copyv2", "请输入主题"); return; }
+    hideError("copyv2"); hideResult("copyv2");
+    document.getElementById("copyv2-btn").disabled = true;
+    document.getElementById("copyv2-btn").textContent = "⏳ 生成中...";
+    try {
+        const resp = await fetch(API_BASE + "/api/generate_copy_v2", {
+            method: "POST", headers: getHeaders(),
+            body: JSON.stringify({topic, category})
+        });
+        const data = await resp.json();
+        if (!data.success) {
+            if (data.limited) { showToast("⚠️ " + data.error); return; }
+            showError("copyv2", data.error); return;
+        }
+        const output = document.getElementById("copyv2-output");
+        output.innerHTML = data.data.map((t, i) => `<div style="margin-bottom:16px;padding:16px;background:#f8f8fa;border-radius:10px"><strong style="color:#1F3864">方案 ${i+1}:</strong><pre style="white-space:pre-wrap;margin-top:8px;font-size:14px;line-height:1.6">${t}</pre></div>`).join("");
+        showResult("copyv2");
+        window._copyv2Text = data.data.join("\n\n");
+    } catch(e) { showError("copyv2", "生成失败"); }
+    finally {
+        document.getElementById("copyv2-btn").disabled = false;
+        document.getElementById("copyv2-btn").textContent = "🧠 生成";
+    }
+}
+
+function copyCopyV2() {
+    if (window._copyv2Text) {
+        navigator.clipboard.writeText(window._copyv2Text).then(() => showToast("✅ 已复制"));
+    }
+}
+
 // ===== 初始化 =====
 initUser().then(() => {
     loadHistory();
