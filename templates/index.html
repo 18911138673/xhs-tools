@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小红书工具箱 - 笔记提取·去水印·文案生成</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-inner">
+            <div class="logo">📕 小红书工具箱</div>
+            <div class="nav-right">
+                <span class="usage-badge" id="usage-badge">今日剩余：<strong id="remaining-count">5</strong> 次</span>
+                <a href="#history" class="nav-link">📋 记录</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">✨ 完全免费 · 每日5次</div>
+            <h1 class="hero-title">小红书博主<br><span class="gradient-text">必备工具箱</span></h1>
+            <p class="hero-desc">笔记内容提取 · 图片去水印 · AI文案生成 · 批量处理<br>一键搞定，效率翻倍</p>
+            <div class="hero-stats">
+                <div class="stat-item"><span class="stat-num">4</span><span class="stat-label">核心工具</span></div>
+                <div class="stat-item"><span class="stat-num">免费</span><span class="stat-label">每日免费</span></div>
+                <div class="stat-item"><span class="stat-num">1s</span><span class="stat-label">极速处理</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 批量提取 -->
+    <section id="batch" class="tool-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">📑</span>
+                <h2>批量笔记提取</h2>
+                <p class="section-desc">一次最多提取10篇笔记，每行一个链接</p>
+            </div>
+            <div class="tool-card">
+                <div class="input-group" style="flex-direction:column">
+                    <textarea id="batch-urls" rows="4" placeholder="每行贴一个小红书链接&#10;https://www.xiaohongshu.com/explore/xxx&#10;https://www.xiaohongshu.com/explore/yyy" class="input-field" style="resize:vertical;min-height:100px"></textarea>
+                    <button onclick="batchExtract()" class="btn-action" id="batch-btn">🚀 批量提取</button>
+                </div>
+                <div id="batch-result" class="hidden">
+                    <div id="batch-output"></div>
+                </div>
+                <div id="batch-error" class="error-area hidden"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 单篇提取 -->
+    <section id="extract" class="tool-section bg-light">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">📝</span>
+                <h2>单篇笔记提取</h2>
+                <p class="section-desc">输入链接，一键获取文案和图片</p>
+            </div>
+            <div class="tool-card">
+                <div class="input-group">
+                    <input type="url" id="url-input" placeholder="https://www.xiaohongshu.com/explore/xxxx" class="input-field">
+                    <button onclick="extractNote()" class="btn-action" id="extract-btn">🔍 提取</button>
+                </div>
+                <div id="extract-result" class="result-area hidden">
+                    <div class="result-header">
+                        <h3 id="note-title"></h3>
+                        <div class="note-meta">
+                            <span id="note-author"></span>
+                            <span id="note-likes"></span>
+                        </div>
+                    </div>
+                    <div class="note-desc" id="note-desc"></div>
+                    <div class="note-images" id="note-images"></div>
+                    <button class="btn-copy" onclick="copyResult()">📋 复制文案</button>
+                </div>
+                <div id="extract-error" class="error-area hidden"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 去水印 -->
+    <section id="watermark" class="tool-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">🖼️</span>
+                <h2>图片去水印</h2>
+                <p class="section-desc">去除底部水印区域，保留高清原图</p>
+            </div>
+            <div class="tool-card">
+                <div class="input-group">
+                    <input type="url" id="wm-url-input" placeholder="粘贴图片链接" class="input-field">
+                    <button onclick="removeWatermark()" class="btn-action">✨ 去水印</button>
+                </div>
+                <div id="wm-result" class="result-area hidden">
+                    <div class="image-compare">
+                        <div class="img-box"><p class="img-label">原图</p><img id="wm-original" src="" alt="原图"></div>
+                        <div class="img-box"><p class="img-label">处理后 ✅</p><img id="wm-processed" src="" alt="去水印"></div>
+                    </div>
+                    <button class="btn-copy" onclick="downloadImage()">⬇️ 下载</button>
+                </div>
+                <div id="wm-error" class="error-area hidden"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 文案生成 -->
+    <section id="copy" class="tool-section bg-light">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">✍️</span>
+                <h2>AI文案生成</h2>
+                <p class="section-desc">输入主题，一键生成种草/测评/教程文案</p>
+            </div>
+            <div class="tool-card">
+                <div class="input-row">
+                    <input type="text" id="topic-input" placeholder="例如：美白精华、北京探店" class="input-field" style="flex:2">
+                    <select id="style-select" class="input-field" style="flex:1">
+                        <option value="种草">🌱 种草风</option>
+                        <option value="测评">📊 测评风</option>
+                        <option value="教程">📚 教程风</option>
+                    </select>
+                    <button onclick="generateCopy()" class="btn-action">✨ 生成</button>
+                </div>
+                <div id="copy-result" class="result-area hidden">
+                    <div id="copy-content" class="copy-content"></div>
+                    <button class="btn-copy" onclick="copyGenerated()">📋 复制</button>
+                </div>
+                <div id="copy-error" class="error-area hidden"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 使用记录 -->
+    <section id="history" class="tool-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">📋</span>
+                <h2>使用记录</h2>
+                <p class="section-desc">最近50条使用记录，方便回顾</p>
+            </div>
+            <div class="tool-card">
+                <div id="history-list"><p style="color:#86868b">加载中...</p></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>小红书工具箱 · 完全免费 · 每日5次额度</p>
+            <p class="footer-sub">数据仅保存在本地设备，不会上传</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
