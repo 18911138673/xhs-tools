@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小红书工具箱 - 笔记提取·去水印·文案生成</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- 导航 -->
+    <nav class="navbar">
+        <div class="container nav-inner">
+            <div class="logo">📕 小红书工具箱</div>
+            <div class="nav-links">
+                <a href="#extract">笔记提取</a>
+                <a href="#watermark">去水印</a>
+                <a href="#copy">文案生成</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">✨ 完全免费 · 无需注册</div>
+            <h1 class="hero-title">小红书博主<br><span class="gradient-text">必备工具箱</span></h1>
+            <p class="hero-desc">笔记内容提取 · 图片去水印 · AI文案生成<br>一键搞定，效率翻倍</p>
+            <a href="#extract" class="btn-primary">开始使用 →</a>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-num">3</span>
+                    <span class="stat-label">核心工具</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-num">免费</span>
+                    <span class="stat-label">永久免费</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-num">1s</span>
+                    <span class="stat-label">极速处理</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工具1: 笔记提取 -->
+    <section id="extract" class="tool-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">📝</span>
+                <h2>笔记内容提取</h2>
+                <p class="section-desc">输入小红书笔记链接，一键提取文案、图片、作者信息</p>
+            </div>
+            <div class="tool-card">
+                <div class="input-group">
+                    <input type="url" id="url-input" placeholder="粘贴小红书笔记链接，例如：https://www.xiaohongshu.com/explore/xxxx" class="input-field">
+                    <button onclick="extractNote()" class="btn-action" id="extract-btn">
+                        <span id="extract-btn-text">🔍 提取内容</span>
+                        <span id="extract-btn-loading" class="hidden">⏳ 提取中...</span>
+                    </button>
+                </div>
+                <div id="extract-result" class="result-area hidden">
+                    <div class="result-header">
+                        <h3 id="note-title"></h3>
+                        <div class="note-meta">
+                            <span id="note-author"></span>
+                            <span id="note-likes"></span>
+                        </div>
+                    </div>
+                    <div class="note-desc" id="note-desc"></div>
+                    <div class="note-images" id="note-images"></div>
+                    <button class="btn-copy" onclick="copyResult()">📋 复制文案</button>
+                </div>
+                <div id="extract-error" class="error-area hidden"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工具2: 去水印 -->
+    <section id="watermark" class="tool-section bg-light">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">🖼️</span>
+                <h2>图片去水印</h2>
+                <p class="section-desc">去除小红书图片底部水印，保留高清原图</p>
+            </div>
+            <div class="tool-card">
+                <div class="input-group">
+                    <input type="url" id="wm-url-input" placeholder="粘贴图片链接" class="input-field">
+                    <button onclick="removeWatermark()" class="btn-action">✨ 去水印</button>
+                </div>
+                <div id="wm-result" class="result-area hidden">
+                    <div class="image-compare">
+                        <div class="img-box">
+                            <p class="img-label">原图</p>
+                            <img id="wm-original" src="" alt="原图">
+                        </div>
+                        <div class="img-box">
+                            <p class="img-label">处理后 ✅</p>
+                            <img id="wm-processed" src="" alt="去水印">
+                        </div>
+                    </div>
+                    <button class="btn-copy" onclick="downloadImage()">⬇️ 下载处理后的图片</button>
+                </div>
+                <div id="wm-error" class="error-area hidden"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 工具3: 文案生成 -->
+    <section id="copy" class="tool-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="tool-icon">✍️</span>
+                <h2>AI文案生成</h2>
+                <p class="section-desc">输入主题，一键生成小红书风格的种草/测评/教程文案</p>
+            </div>
+            <div class="tool-card">
+                <div class="input-row">
+                    <input type="text" id="topic-input" placeholder="输入主题，例如：美白精华、北京探店" class="input-field" style="flex:2">
+                    <select id="style-select" class="input-field" style="flex:1">
+                        <option value="种草">🌱 种草风</option>
+                        <option value="测评">📊 测评风</option>
+                        <option value="教程">📚 教程风</option>
+                    </select>
+                    <button onclick="generateCopy()" class="btn-action">✨ 生成文案</button>
+                </div>
+                <div id="copy-result" class="result-area hidden">
+                    <div id="copy-content" class="copy-content"></div>
+                    <button class="btn-copy" onclick="copyGenerated()">📋 复制文案</button>
+                </div>
+                <div id="copy-error" class="error-area hidden"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>小红书工具箱 · 完全免费 · 持续更新</p>
+            <p class="footer-sub">如有问题或建议，欢迎反馈</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
